@@ -1,0 +1,19 @@
+<div class="backdrop"></div>
+<form [formGroup]="form">
+    <mat-form-field>
+        <input formControlName="title" placeholder="Заголовок" required>
+        @if(form.controls["title"].invalid && form.controls["title"].touched){
+            <div class="alert">Заголовок не может содержать меньше 5 и больше 20 символов!</div>
+        }
+    </mat-form-field>
+    <mat-form-field>
+        <textarea formControlName="content" placeholder="Что тебе нужно сделать?" required=""></textarea>
+        @if(form.controls["content"].invalid && form.controls["content"].touched){
+            <div class="alert">Текст не может содержать меньше 5 и больше 20 символов!</div>
+        }
+    </mat-form-field>
+    <div class="btn-row">
+        <button matButton="filled" [disabled]="form.invalid">Сохранить</button>
+        <button matButton="filled">Отмена</button>
+    </div>
+</form>
