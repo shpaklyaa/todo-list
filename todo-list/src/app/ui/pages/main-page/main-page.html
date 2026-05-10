@@ -1,0 +1,26 @@
+<div class="body">
+    <h1 class="title">Simple To Do</h1>
+    <div class="table-todo">
+        @for (card of cards; track $index) {
+            <app-todo-card
+            [card]="card"
+            (save)="saveEditingCard($event)"
+            (delete)="deleteCard($event)">
+            </app-todo-card>
+        }
+        @empty {
+            <h4>Нет записей</h4>
+        }
+    </div>
+    <div>
+        <button matButton="filled" class="add-btn"
+        (click)="openModalForm()">создать</button>
+    </div>
+</div>
+
+@if (isModalOpen()) {
+    <app-modal
+    (save)="saveCard($event)"
+    (close)="closeModalForm()">
+    </app-modal>
+}
