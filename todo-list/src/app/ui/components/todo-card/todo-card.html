@@ -1,5 +1,45 @@
-<mat-card class="card">
-    <mat-card-title>{{card.title}}</mat-card-title>
-    <mat-card-subtitle>{{card.content}}</mat-card-subtitle>
-    <p>{{card.endDate}}</p>
-</mat-card>
+@if(!isEditing()) {
+    <mat-card class="card">
+        <mat-card-title>{{card.title}}</mat-card-title>
+        <mat-card-subtitle>{{card.content}}</mat-card-subtitle>
+        <p>{{card.endDate}}</p>
+        <button mat-icon-button class="edit-btn" (click)="startEditing()">
+            <mat-icon>border_color</mat-icon>
+        </button>
+        <button mat-icon-button class="delete-btn" (click)="onDelete()">
+            <mat-icon>delete</mat-icon>
+        </button>
+    </mat-card>
+} @else {
+    <form [formGroup]="form" class="form">
+    <h1 class="h-title">Добавить запись</h1>
+    <mat-form-field class="title">
+        <mat-label>Заголовок</mat-label>
+        <input matInput formControlName="title" placeholder="Заголовок" required>
+        @if(form.controls["title"].invalid && form.controls["title"].touched){
+            <div class="alert">Заголовок не может содержать меньше 5 и больше 20 символов!</div>
+        }
+    </mat-form-field>
+    <mat-form-field class="content">
+        <mat-label>Чем займешься сегодня?</mat-label>
+        <textarea matInput formControlName="content" placeholder="Что тебе нужно сделать?" required=""></textarea>
+        @if(form.controls["content"].invalid && form.controls["content"].touched){
+            <div class="alert">Текст не может содержать меньше 5 и больше 20 символов!</div>
+        }
+    </mat-form-field>
+    <mat-form-field class="date">
+        <mat-label>Choose a date</mat-label>
+        <input matInput [matDatepicker]="picker" formControlName="endDate">
+        <mat-hint>MM/DD/YYYY</mat-hint>
+        <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+        <mat-datepicker #picker></mat-datepicker>
+        @if(form.controls["endDate"].invalid && form.controls["endDate"].touched){
+            <div class="alert">Дата обязательна!</div>
+        }
+    </mat-form-field>
+    <div class="btn-row">
+        <button matButton="filled" [disabled]="form.invalid" class="save-btn" (click)="onSave()">Сохранить</button>
+        <button matButton="filled" (click)="cancelEditing()" class="close-btn">Отмена</button>
+    </div>
+</form>
+}
