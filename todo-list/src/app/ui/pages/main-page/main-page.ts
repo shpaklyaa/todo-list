@@ -12,32 +12,32 @@ import { Modal } from '../../components/modal/modal';
   styleUrl: './main-page.scss',
 })
 export class MainPage {
-  cards: Card[] = [
+  cards = signal<Card[]>([
     { id: '0', title: 'Написать to do', content: 'Learn the fundamentals of Angular.', endDate: '10.05.2026' },
     { id: '1', title: 'Покормить бэллу', content: 'Накормить и поменять воду', endDate: '09.05.2026' },
-  ];
+  ]);
 
   isModalOpen = signal(false);
 
-  protected openModalForm(): void {
+  public openModalForm(): void {
     this.isModalOpen.set(true);
   }
 
-  protected closeModalForm(): void {
+  public closeModalForm(): void {
     this.isModalOpen.set(false);
   }
 
-  protected saveEditingCard(updatedCard: Card) {
-    this.cards = this.cards.map(card => card.id === updatedCard.id ? updatedCard : card);
+  public saveEditingCard(updatedCard: Card) {
+    this.cards.set(this.cards().map(card => card.id === updatedCard.id ? updatedCard : card));
   }
 
-  protected saveCard(card: Card) {
-    this.cards.push(card);
+  public saveCard(card: Card) {
+    this.cards.set([...this.cards(), card]);
     console.log('card pushed', card);
   }
 
-  protected deleteCard(cardId: string) {
-    this.cards = this.cards.filter(card => card.id !== cardId);
+  public deleteCard(cardId: string) {
+    this.cards.set(this.cards().filter(card => card.id !== cardId));
     console.log('card deleted id', cardId);
   }
 

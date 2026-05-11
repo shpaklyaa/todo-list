@@ -1,4 +1,4 @@
-import { Component, Input, EventEmitter, Output, signal } from '@angular/core';
+import { Component, Input, EventEmitter, Output, signal, input } from '@angular/core';
 import { MatCardModule } from '@angular/material/card';
 import { Card } from '../../../types/card';
 import { MatIcon } from '@angular/material/icon';
@@ -9,6 +9,7 @@ import {MatButtonModule} from '@angular/material/button';
 import {MatIconModule} from '@angular/material/icon';
 import {provideNativeDateAdapter} from '@angular/material/core';
 import {MatDatepickerModule} from '@angular/material/datepicker';
+import { MainPage } from '../../pages/main-page/main-page';
 
 @Component({
   selector: 'app-todo-card',
@@ -19,14 +20,13 @@ import {MatDatepickerModule} from '@angular/material/datepicker';
   providers: [provideNativeDateAdapter()]
 })
 export class TodoCard {
-  @Input() card!: Card;
-  @Output() delete = new EventEmitter<string>;
-  @Output() save = new EventEmitter<Card>;
   isEditing = signal(false);
 
   form: FormGroup;
 
-  constructor() {
+  @Input() card!: Card;
+
+  constructor(private mainpage: MainPage) {
     this.form = new FormGroup({
       'title': new FormControl('', [Validators.required, Validators.minLength(5), Validators.maxLength(20)]),
       'content': new FormControl('', [Validators.required, Validators.minLength(5), Validators.maxLength(40)]),
@@ -34,8 +34,9 @@ export class TodoCard {
     })
   }
 
+
   onDelete() {
-    this.delete.emit(this.card.id);
+    this.mainpage.deleteCard(this.card.id);
   }
 
   onClose() {
@@ -44,13 +45,13 @@ export class TodoCard {
 
   onSave() {
     if(this.form.valid) {
-      const updatedCard: Card = {
+      const updatedCard = signal<Card>({
         ...this.card,
         title: this.form.value.title.trim(),
         content: this.form.value.content.trim(),
         endDate: this.form.value.endDate
-      }
-      this.save.emit(updatedCard);
+      });
+      this.mainpage.saveEditingCard(updatedCard())
       this.onClose();
     }
   }
